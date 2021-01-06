@@ -25,7 +25,7 @@ SECRET_KEY = '83bz)9ugmthummzwi7su*0sg^v$o(i(c^6#bz&wfma!ixp%v9x'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [ "coinwatch.tanay.xyz" ]
 
 
 # Application definition
