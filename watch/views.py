@@ -8,6 +8,10 @@ def index(request):
     btc = list(map(lambda x: float(x.btc), latest_rates))
     eth = list(map(lambda x: float(x.eth), latest_rates))
 
+    times.reverse()
+    btc.reverse()
+    eth.reverse()
+
     context = {
         "times": json.dumps(times),
         "btc": json.dumps(btc),
