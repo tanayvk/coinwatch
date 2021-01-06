@@ -87,6 +87,7 @@
             </div>
         </div>
     </div>
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
     <script>
         let socketURL = 'ws://' + window.location.host + '';
@@ -100,9 +101,17 @@
             rData = JSON.parse(e.data);
             curTime = new Date();
             curTime = "" + curTime.getHours() + ":" + curTime.getMinutes() + ":" + curTime.getSeconds();
+            if (btcChart.data.labels.length >= 60) {
+                btcChart.data.labels.shift();
+                btcChart.data.datasets[0].data.shift();
+            }
             btcChart.data.labels.push(curTime);
             btcChart.data.datasets[0].data.push(parseFloat(rData['BTC']));
             btcChart.update();
+            if (ethChart.data.labels.length >= 60) {
+                ethChart.data.labels.shift();
+                ethChart.data.datasets[0].data.shift();
+            }
             ethChart.data.labels.push(curTime);
             ethChart.data.datasets[0].data.push(parseFloat(rData['ETH']));
             ethChart.update();
@@ -117,12 +126,6 @@
         var ethCtx = document.getElementById('ethChart').getContext('2d');
 
         var chartOptions = {
-            title: {
-                display: true,
-                text: 'Bitcoin Prices',
-                fontSize: 35
-            },
-
             legend: {
                 display: false
             },
@@ -162,10 +165,10 @@
         var btcChart = new Chart(btcCtx, {
             type: 'line',
             data: {
-                labels: [],
+                labels: {{ times|safe }},
                 datasets: [{
                     label: '$',
-                    data: [],
+                    data: {{ btc|safe }},
                     borderColor: 'rgba(247,147,26,1)',
                     borderJoinStyle: 'round',
                     borderCapStyle: 'round',
@@ -176,16 +179,23 @@
                 }]
             },
 
-            options: chartOptions,
+            options: Object.assign({}, chartOptions, {
+                title: {
+                    display: true,
+                    text: 'Bitcoin Prices',
+                    fontSize: 35
+                }
+            }),
+
         });
 
         var ethChart = new Chart(ethCtx, {
             type: 'line',
             data: {
-                labels: [],
+                labels: {{ times|safe }},
                 datasets: [{
                     label: '$',
-                    data: [],
+                    data: {{ eth|safe }},
                     borderColor: 'rgba(10,10,10,1)',
                     borderJoinStyle: 'round',
                     borderCapStyle: 'round',
@@ -196,7 +206,13 @@
                 }]
             },
 
-            options: chartOptions,
+            options: Object.assign({}, chartOptions, {
+                title: {
+                    display: true,
+                    text: 'Ethereum Prices',
+                    fontSize: 35
+                }
+            }),
         });
     </script>
 </body>
