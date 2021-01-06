@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>Coin Watch - Tanay Karnik</title>
+    <style>
+        h1 {
+            font-size: 1.5em;
+        }
+
+        h2 {
+            font-size: 1.25em;
+        }
+
+        h1,
+        h2,
+        p {
+            font-family: 'Red Hat Text', sans-serif;
+            color: #303030;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+        }
+
+
+        .cards {
+            width: 90%;
+            display: inline-flex;
+            flex-direction: row;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            padding-top: 30px;
+            padding-bottom: 30px;
+        }
+
+        .btc,
+        .cosmos,
+        .ethereum {
+            display: grid;
+            max-width: 600px;
+            min-width: 500px;
+            grid-template-columns: 1fr;
+            grid-template-rows: minmax(50px, 60px) 1fr;
+            grid-template:
+                "info"
+                "chart";
+        }
+
+        .asset-info {
+            grid-area: info;
+            display: inline-flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 5% 0 5%;
+        }
+
+        .title {
+            display: inline-flex;
+        }
+
+        .card h1 {
+            margin-left: 10px;
+        }
+
+
+        #btcChart,
+        #cosmosChart,
+        #ethereumChart {
+            grid-area: chart;
+            margin-top: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="cards">
+            <div style="width: 30%" class="btc">
+                <canvas id="btcChart"></canvas>
+            </div>
+
+            <div style="width: 30%" class="ethereum">
+                <canvas id="ethChart"></canvas>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+    <script>
+        let socketURL = 'ws://' + window.location.host + '';
+        let socket = new WebSocket(socketURL);
+
+        socket.onopen = function (e) {
+            console.log("Socket connection established!");
+        };
+
+        socket.onmessage = function (e) {
+            rData = JSON.parse(e.data);
+            curTime = new Date();
+            curTime = "" + curTime.getHours() + ":" + curTime.getMinutes() + ":" + curTime.getSeconds();
+            btcChart.data.labels.push(curTime);
+            btcChart.data.datasets[0].data.push(parseFloat(rData['BTC']));
+            btcChart.update();
+            ethChart.data.labels.push(curTime);
+            ethChart.data.datasets[0].data.push(parseFloat(rData['ETH']));
+            ethChart.update();
+        }
+
+        socket.onclose = function (e) {
+            console.log('Connection CLosed');
+        };
+    </script>
+    <script>
+        var btcCtx = document.getElementById('btcChart').getContext('2d');
+        var ethCtx = document.getElementById('ethChart').getContext('2d');
+
+        var chartOptions = {
+            title: {
+                display: true,
+                text: 'Bitcoin Prices',
+                fontSize: 35
+            },
+
+            legend: {
+                display: false
+            },
+
+            scales: {
+                xAxes: [{
+                    display: false,
+                    gridLines: {}
+                }],
+                yAxes: [{
+                    display: true,
+                    gridLines: {}
+                }]
+            },
+
+            tooltips: {
+                //this removes legend color
+                displayColors: false,
+            },
+
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        callback: function (value, index, values) {
+                            return '$' + value;
+                        }
+                    }
+                }],
+                xAxes: [{
+                    ticks: {
+                        callback: function () { }
+                    }
+                }]
+            }
+        };
+
+        var btcChart = new Chart(btcCtx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: '$',
+                    data: [],
+                    borderColor: 'rgba(247,147,26,1)',
+                    borderJoinStyle: 'round',
+                    borderCapStyle: 'round',
+                    borderWidth: 3,
+                    pointRadius: 0,
+                    pointHitRadius: 10,
+                    lineTension: .2,
+                }]
+            },
+
+            options: chartOptions,
+        });
+
+        var ethChart = new Chart(ethCtx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: '$',
+                    data: [],
+                    borderColor: 'rgba(10,10,10,1)',
+                    borderJoinStyle: 'round',
+                    borderCapStyle: 'round',
+                    borderWidth: 3,
+                    pointRadius: 0,
+                    pointHitRadius: 10,
+                    lineTension: .2,
+                }]
+            },
+
+            options: chartOptions,
+        });
+    </script>
+</body>
+
+</html>
