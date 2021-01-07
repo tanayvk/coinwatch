@@ -99,19 +99,20 @@
 
         socket.onmessage = function (e) {
             rData = JSON.parse(e.data);
-            curTime = (new Date()).toLocaleTimeString();
+            console.log(rData['time'])
+            time = (new Date(rData['time'])).toLocaleTimeString();
             if (btcChart.data.labels.length >= 60) {
                 btcChart.data.labels.shift();
                 btcChart.data.datasets[0].data.shift();
             }
-            btcChart.data.labels.push(curTime);
+            btcChart.data.labels.push(time);
             btcChart.data.datasets[0].data.push(parseFloat(rData['BTC']));
             btcChart.update();
             if (ethChart.data.labels.length >= 60) {
                 ethChart.data.labels.shift();
                 ethChart.data.datasets[0].data.shift();
             }
-            ethChart.data.labels.push(curTime);
+            ethChart.data.labels.push(time);
             ethChart.data.datasets[0].data.push(parseFloat(rData['ETH']));
             ethChart.update();
         }

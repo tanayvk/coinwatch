@@ -21,6 +21,8 @@ def add_coin_rate_to_model(btc, eth):
     c = CoinRate(btc=float(btc), eth=float(eth))
     c.save()
 
+    return c.time
+
 # run a check every minute
 delay = 60
 
@@ -41,12 +43,13 @@ async def main():
 
                 btc_value = btc_data['data']['rates']['USD']
                 eth_value = eth_data['data']['rates']['USD']
+                time = await add_coin_rate_to_model(btc_value, eth_value)
+
                 await websocket.send(json.dumps({
+                    'time': time.strftime("%c %Z"),
                     'BTC': btc_value,
                     'ETH': eth_value
                 }))
-                await add_coin_rate_to_model(btc_value, eth_value)
-
         await asyncio.sleep(delay)
 
 asyncio.run(main())
