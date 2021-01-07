@@ -5,10 +5,9 @@ import websockets
 import random
 import asyncio
 import sys
+import os
 
-from django.conf import settings
-import coinwatch.settings as app_settings
-settings.configure(INSTALLED_APPS=app_settings.INSTALLED_APPS,DATABASES=app_settings.DATABASES)
+os.environ['DJANGO_SETTINGS_MODULE'] = 'coinwatch.settings'
 import django
 django.setup()
 
