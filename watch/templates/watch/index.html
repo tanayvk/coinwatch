@@ -99,20 +99,19 @@
 
         socket.onmessage = function (e) {
             rData = JSON.parse(e.data);
-            console.log(rData['time'])
-            time = (new Date(rData['time'])).toLocaleTimeString();
+            ctime = (new Date(rData['time'])).toLocaleTimeString();
             if (btcChart.data.labels.length >= 60) {
                 btcChart.data.labels.shift();
                 btcChart.data.datasets[0].data.shift();
             }
-            btcChart.data.labels.push(time);
+            btcChart.data.labels.push(ctime);
             btcChart.data.datasets[0].data.push(parseFloat(rData['BTC']));
             btcChart.update();
             if (ethChart.data.labels.length >= 60) {
                 ethChart.data.labels.shift();
                 ethChart.data.datasets[0].data.shift();
             }
-            ethChart.data.labels.push(time);
+            ethChart.data.labels.push(ctime);
             ethChart.data.datasets[0].data.push(parseFloat(rData['ETH']));
             ethChart.update();
         }
@@ -169,6 +168,8 @@
 
         var times = {{ times|safe }};
         times = times.map(x => convertTime(x));
+        var times2 = {{ times|safe }};
+        times2 = times2.map(x => convertTime(x));
 
         var btcChart = new Chart(btcCtx, {
             type: 'line',
@@ -200,7 +201,7 @@
         var ethChart = new Chart(ethCtx, {
             type: 'line',
             data: {
-                labels: times,
+                labels: times2,
                 datasets: [{
                     label: '$',
                     data: {{ eth|safe }},
