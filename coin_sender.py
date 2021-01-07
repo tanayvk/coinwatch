@@ -46,7 +46,7 @@ async def main():
                 time = await add_coin_rate_to_model(btc_value, eth_value)
 
                 await websocket.send(json.dumps({
-                    'time': time.strftime("%c %Z"),
+                    'time': time.strftime("%c %z"),
                     'BTC': btc_value,
                     'ETH': eth_value
                 }))

@@ -22,4 +22,4 @@ def index(request):
     return render(request, 'watch/index.html', context)
 
 def convertTime(time):
-    return time.strftime("%c")
+    return time.strftime("%c %z")
