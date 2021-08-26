@@ -6,7 +6,6 @@ import datetime
 def index(request):
     latest_rates = CoinRate.objects.order_by('-time')[:60]
     times = list(map(lambda x: convertTime(x.time), latest_rates))
-    print(times)
     btc = list(map(lambda x: float(x.btc), latest_rates))
     eth = list(map(lambda x: float(x.eth), latest_rates))
 

@@ -23,7 +23,7 @@ def add_coin_rate_to_model(btc, eth):
     return c.time
 
 # run a check every minute
-delay = 60
+delay = 10
 
 port = 8000
 if len(sys.argv) > 1:
